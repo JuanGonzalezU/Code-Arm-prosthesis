@@ -33,4 +33,9 @@ int filtro_promedios(int muestras, int puerto);
 
 int sgn(int x);
 
+// -------------------------------------------------------------------------------------------------
+// Control tipo P
+
+int control_p(int error);
+
 #endif

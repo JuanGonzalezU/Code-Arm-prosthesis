@@ -9,8 +9,8 @@
 //Salida al motor
 const int m1 = 2, m2 = 3, v = 4;
 
-// Entrada del sensor
-const int in = A0;
+// Entrada del sensor del motor - Entradad del sensor infrarojo
+const int in = A0, sensor = A1;
 
 // Inicalización ------------------------------------------------
 
@@ -27,8 +27,8 @@ void setup() {
 
 // Variables de control  ------------------------------------------
 
-// Valor temporal de posicion - Posicion deseada - Error
-int tmp_pos, des_pos = 50, err, tmp_vel; 
+// Valor temporal de posicion - Posicion deseada - Error - Derivada del error
+int tmp_pos, des_pos, err, tmp_vel, der_err ,prev_err = 0; 
 
 
 // Constante de proporcionalidad - Velocidad del motor
@@ -38,14 +38,22 @@ double P = 0.1 , vel = 255;
 
 void loop() {
 
+  // Des pos
+  des_pos = analogRead(sensor);
+
   // Leer y Filtrar señal
-  tmp_pos = filtro_promedios(10, in);
+  tmp_pos = filtro_promedios(1, in);
 
   // Calcular el error
   err = des_pos - tmp_pos;
 
+  // Derivada del error
+  der_err = err - prev_err ;
+  
+  prev_err = err;
+
   // Nueva velocida
-  tmp_vel = control_p1(err);
+  tmp_vel = control_PD(err,der_err,1);
 
   // Mover motor
   mover(m1, m2, v, tmp_vel);
@@ -57,23 +65,11 @@ void loop() {
 
 }
 
-// Control P -----------------------------------------------------
-
-void control_p(int error) {
-
-  if (err > 0) {
-    mover(m1, m2, v, 250);
-  } else if (err < 0) {
-    mover(m1, m2, v, -250);
-  }
-
-}
-
-int control_p1(int error) {
+int control_PD(int error,int der_err, int D) {
 
   if (abs(error) < 15) {
     return 0;
   } else {
-    return 250 * sgn(error);
+    return 255 * sgn(error) + D*der_err;
   }
 }

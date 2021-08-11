@@ -15,7 +15,7 @@ void mover(int m1, int m2, int v, int vel) {
   if (vel >= 0 and vel <= 255) {
 
     if (vel > 250) {
-      vel = 510;
+      vel = 250;
     }
     digitalWrite(m1, 0);
     digitalWrite(m2, 1);
@@ -26,7 +26,7 @@ void mover(int m1, int m2, int v, int vel) {
     vel = -vel;
 
     if (vel > 250) {
-      vel = 510;
+      vel = 250;
     }
     
     digitalWrite(m1, 1);
@@ -74,9 +74,21 @@ int filtro_promedios(int muestras, int puerto) {
   return avg_val;
 }
 
-
+// -------------------------------------------------------------------------------------------------
+// Obtener el signo del numero
 int sgn(int x) {
   if (x > 0) return 1;
   if (x < 0) return -1;
   return 0;
+}
+
+// -------------------------------------------------------------------------------------------------
+// Control tipo P
+
+int control_p(int error) {
+  if (abs(error) < 15) {
+    return 0;
+  } else {
+    return 250 * sgn(error);
+  }
 }
