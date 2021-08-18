@@ -12,23 +12,15 @@
 
 void mover(int m1, int m2, int v, int vel) {
 
-  if (vel >= 0 and vel <= 255) {
-
-    if (vel > 250) {
-      vel = 250;
-    }
+  if (sgn(vel) > 0) {
     digitalWrite(m1, 0);
     digitalWrite(m2, 1);
     analogWrite(v, vel);
   }
-  else if (vel >= -255 and vel < 0)
+
+  else if (sgn(vel) <= 0)
   {
     vel = -vel;
-
-    if (vel > 250) {
-      vel = 250;
-    }
-    
     digitalWrite(m1, 1);
     digitalWrite(m2, 0);
     analogWrite(v, vel);
