@@ -61,9 +61,6 @@ void loop() {
   prev_err = err;
 
   // Nueva velocida
-  // tmp_vel = control_PD(err,der_err,1);
-  // tmp_vel = control_p1(err, 15);
-
   tmp_vel = control_PI(err, int_err, 0.001);
 
   // Mover motor
@@ -73,14 +70,4 @@ void loop() {
   Serial.print(" ");
   Serial.println(des_pos);
 
-
-}
-
-
-int control_p1(float error, int margen) {
-  if (abs(error) < margen) {
-    return 0;
-  } else {
-    return 255 * sgn(error);
-  }
 }
