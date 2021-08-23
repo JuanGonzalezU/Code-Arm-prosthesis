@@ -84,3 +84,29 @@ int control_p(int error) {
     return 250 * sgn(error);
   }
 }
+
+// -------------------------------------------------------------------------------------------------
+// Integral del error
+
+int int_error(int int_err, int new_e, int margen) {
+
+  int_err = int_err + new_e;
+
+  if (abs(new_e) < margen) {
+    int_err = 0;
+  }
+  
+  return int_err;
+}
+
+// -------------------------------------------------------------------------------------------------
+// Controlador PI
+
+int control_PI(int error, int int_err, int I) {
+
+  if (abs(error) < 15) {
+    return 0;
+  } else {
+    return 255 * sgn(error) + int_err*I ;
+  }
+}

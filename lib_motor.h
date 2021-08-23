@@ -38,4 +38,14 @@ int sgn(int x);
 
 int control_p(int error);
 
+// -------------------------------------------------------------------------------------------------
+// Integral del error
+
+int int_error(int int_err, int new_e, int margen);
+
+// -------------------------------------------------------------------------------------------------
+// Controlador PI
+
+int control_PI(int error, int int_err, int I);
+
 #endif

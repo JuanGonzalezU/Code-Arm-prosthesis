@@ -21,8 +21,10 @@ void setup() {
 
   // Definir pins de salida
   for (int i = 2 ; i <= 4 ; i++) {
-    pinMode(i, INPUT);
+    pinMode(i, OUTPUT);
   }
+  pinMode(sensor, INPUT);
+  pinMode(in, INPUT);
 }
 
 // Variables de control  ------------------------------------------
@@ -74,14 +76,6 @@ void loop() {
 
 }
 
-int control_PI(int error, int int_err, int I) {
-
-  if (abs(error) < 15) {
-    return 0;
-  } else {
-    return 255 * sgn(error) + int_err*I ;
-  }
-}
 
 int control_p1(float error, int margen) {
   if (abs(error) < margen) {
@@ -89,15 +83,4 @@ int control_p1(float error, int margen) {
   } else {
     return 255 * sgn(error);
   }
-}
-
-int int_error(int int_err, int new_e, int margen) {
-
-  int_err = int_err + new_e;
-
-  if (abs(new_e) < margen) {
-    int_err = 0;
-  }
-  
-  return int_err;
 }
