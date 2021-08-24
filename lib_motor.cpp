@@ -95,7 +95,7 @@ int int_error(int int_err, int new_e, int margen) {
   if (abs(new_e) < margen) {
     int_err = 0;
   }
-  
+
   return int_err;
 }
 
@@ -107,18 +107,127 @@ int control_PI(int error, int int_err, int I, int margen) {
   if (abs(error) < margen) {
     return 0;
   } else {
-    return 255 * sgn(error) + int_err*I ;
+    return 255 * sgn(error) + int_err * I ;
   }
 }
 
 // -------------------------------------------------------------------------------------------------
 // Controlador PID
 
-int control_PID(int error, int int_err, int der_err,int P, int I, int D, int margen) {
+int control_PID(int error, int int_err, int der_err, int P, int I, int D, int margen) {
 
   if (abs(error) < margen) {
     return 0;
   } else {
-    return  sgn(error)*P + int_err*I + der_err*D;
+    return  sgn(error) * P + int_err * I + der_err * D;
   }
+}
+
+// -------------------------------------------------------------------------------------------------
+// Mover y contrlar dada una posicion
+
+// Variables de control  ------------------------------------------
+
+// Valor temporal de posicion - 0
+// Posicion deseada - 1
+// Velocidad temporal - 2
+// Derivada del error - 3
+// Valor anteriro de error - 4
+// Integral del error - 5
+// constante P - 6
+// constante I - 7
+// constante D - 8
+// margen de error maximo (0 1023) - 9
+// Numero de muestras a promediar - 10
+// Sensor del motor - 11
+// Posicion deseada dada por un potenciometro - 12
+
+void mover_y_controlar_posicion_LC(int error, int * vars_control, int * motor) {
+
+  // Extraer variables
+
+  // Leer y Filtrar señal - Temp pos
+  vars_control[0] = filtro_promedios(vars_control[10], vars_control[11]);
+
+  // Calcular el error
+  error = vars_control[1] - vars_control[0];
+
+  // Integral del error
+  vars_control[5] = int_error(vars_control[5], error, 50);
+
+  // Derivada del error
+  vars_control[3] = error - vars_control[4];
+
+  // Nuevo valor temporal de error
+  vars_control[4] = error;
+
+  // Control PID para devolver velocidad del motor
+  vars_control[2] = control_PID(error, vars_control[5] , vars_control[3], vars_control[6], vars_control[7], vars_control[8], vars_control[9]);
+
+  // Mover motor
+  mover(motor[0], motor[1], motor[2], vars_control[2]);
+
+}
+
+// -------------------------------------------------------------------------------------------------
+// Mover y contrlar dada una entrada analoga
+
+// Variables de control  ------------------------------------------
+
+// Valor temporal de posicion - 0
+// Posicion deseada - 1
+// Velocidad temporal - 2
+// Derivada del error - 3
+// Valor anteriro de error - 4
+// Integral del error - 5
+// constante P - 6
+// constante I - 7
+// constante D - 8
+// margen de error maximo (0 1023) - 9
+// Numero de muestras a promediar - 10
+// Sensor del motor - 11
+// Posicion deseada dada por un potenciometro - 12
+
+void mover_y_controlar_potenciometro_LC(int error, int * vars_control, int * motor) {
+  // Extraer variables
+
+  // Des pos
+  vars_control[1] = analogRead(vars_control[12]);
+
+  // Leer y Filtrar señal - Temp pos
+  vars_control[0] = filtro_promedios(vars_control[10], vars_control[11]);
+
+  // Calcular el error
+  error = vars_control[1] - vars_control[0];
+
+  // Integral del error
+  vars_control[5] = int_error(vars_control[5], error, 50);
+
+  // Derivada del error
+  vars_control[3] = error - vars_control[4];
+
+  // Nuevo valor temporal de error
+  vars_control[4] = error;
+
+  // Control PID para devolver velocidad del motor
+  vars_control[2] = control_PID(error, vars_control[5] , vars_control[3], 150, 0.000001, 0.00001, 20);
+
+  // Mover motor
+  mover(motor[0], motor[1], motor[2], vars_control[2]);
+
+}
+
+// -------------------------------------------------------------------------------------------------
+// Inicializar motor
+
+void inicializar_motor(int motor, int sensor, int potenciometro) {
+
+  // Definir pins de salida
+  pinMode(motor, OUTPUT);
+
+  // Definir pines de entrada
+  pinMode(potenciometro, INPUT);
+  pinMode(sensor, INPUT);
+
+
 }

@@ -53,4 +53,10 @@ int control_PI(int error, int int_err, int I, int margen);
 
 int control_PID(int error, int int_err, int der_err,int P, int I, int D, int margen);
 
+void mover_y_controlar_posicion_LC(int error, int * vars_control, int * motor);
+
+void mover_y_controlar_potenciometro_LC(int error, int * vars_control, int * motor);
+
+void inicializar_motor(int motor, int sensor, int potenciometro) ;
+
 #endif
