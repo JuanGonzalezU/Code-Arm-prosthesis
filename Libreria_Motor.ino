@@ -53,7 +53,7 @@ void loop() {
 
   // Integral del error
 
-  int_err = int_error(int_err, err, 50);
+  int_err = int_error(int_err, err, 1);
 
   // Derivada del error
   der_err = err - prev_err ;
@@ -61,7 +61,7 @@ void loop() {
   prev_err = err;
 
   // Nueva velocida
-  tmp_vel = control_PI(err, int_err, 0.001);
+  tmp_vel = control_PID(err, int_err, der_err, 150, 0.000001, 0.00001, 20);
 
   // Mover motor
   mover(m1, m2, v, tmp_vel);

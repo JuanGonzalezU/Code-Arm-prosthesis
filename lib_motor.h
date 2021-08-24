@@ -46,6 +46,11 @@ int int_error(int int_err, int new_e, int margen);
 // -------------------------------------------------------------------------------------------------
 // Controlador PI
 
-int control_PI(int error, int int_err, int I);
+int control_PI(int error, int int_err, int I, int margen);
+
+// -------------------------------------------------------------------------------------------------
+// Controlador PID
+
+int control_PID(int error, int int_err, int der_err,int P, int I, int D, int margen);
 
 #endif

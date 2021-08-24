@@ -102,11 +102,23 @@ int int_error(int int_err, int new_e, int margen) {
 // -------------------------------------------------------------------------------------------------
 // Controlador PI
 
-int control_PI(int error, int int_err, int I) {
+int control_PI(int error, int int_err, int I, int margen) {
 
-  if (abs(error) < 15) {
+  if (abs(error) < margen) {
     return 0;
   } else {
     return 255 * sgn(error) + int_err*I ;
+  }
+}
+
+// -------------------------------------------------------------------------------------------------
+// Controlador PID
+
+int control_PID(int error, int int_err, int der_err,int P, int I, int D, int margen) {
+
+  if (abs(error) < margen) {
+    return 0;
+  } else {
+    return  sgn(error)*P + int_err*I + der_err*D;
   }
 }
