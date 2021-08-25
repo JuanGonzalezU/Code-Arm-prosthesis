@@ -5,10 +5,16 @@
 // Definir variables --------------------------------------------
 
 //Salida al motor
-const int ma1 = 2, ma2 = 3, va = 4, mb1 = 5, mb2 = 6, vb = 7;
+const int ma[] = {2, 3, 4};
+const int mb[] = {5, 6, 7};
+const int mc[] = {8, 9, 10};
+const int md[] = {11, 12, 13};
 
 // Entradas
-const int  pot_a = A0, sens_a = A1, pot_b = A2, sens_b = A3;
+const int  sens_a = A1, pot_a = A0;
+const int  sens_b = A3, pot_b = A2;
+const int  sens_c = A5, pot_c = A4;
+const int  sens_d = A7, pot_d = A6;
 
 // Inicalización ------------------------------------------------
 
@@ -17,66 +23,43 @@ void setup() {
   // Open serial
   Serial.begin(9600);
 
-  // Definir pins de salida
-  for (int i = 2 ; i <= 7 ; i++) {
-    pinMode(i, OUTPUT);
-  }
-
-  // Definir pines de entrada
-  pinMode(pot_a, INPUT);
-  pinMode(sens_a, INPUT);
-
-  pinMode(pot_b, INPUT);
-  pinMode(sens_b, INPUT);
+  // Inicializar pines del motor
+  inicializar_motor(ma, sens_a, pot_a);
+  inicializar_motor(mb, sens_b, pot_b);
+  inicializar_motor(mc, sens_c, pot_c);
+  inicializar_motor(md, sens_d, pot_d);
 }
 
 // Variables de control  ------------------------------------------
 
-// Valor temporal de posicion
-// Posicion deseada 
-// Velocidad temporal
-// Derivada del error
-// Valor anteriro de error
-// Integral del error
+int vars_control_a[13] = {0, 0, 0, 0, 0, 0, 200, 0.0001, 0.0001, 10, 5, sens_a, pot_a};
+int vars_control_b[13] = {0, 0, 0, 0, 0, 0, 250, 0.0001, 0.0001, 10, 5, sens_b, pot_b};
+int vars_control_c[13] = {0, 0, 0, 0, 0, 0, 250, 0.0001, 0.0001, 10, 5, sens_c, pot_c};
+int vars_control_d[13] = {0, 0, 0, 0, 0, 0, 250, 0.0001, 0.0001, 10, 5, sens_d, pot_d};
 
-int tmpPos_a, desPos_a, tmpVel_a, derErr_a, prevErr_a = 0, intErr_a;
-int tmpPos_b, desPos_b, tmpVel_b, derErr_b, prevErr_b = 0, intErr_b;
-
-// Error 
-float err_a, err_b;
+// Error
+float err_a, err_b, err_c, err_d;
 
 // Ciclo principal ------------------------------------------------
 
 void loop() {
 
-  // Des pos
-  desPos_a = analogRead(sens_a);
-  desPos_b = analogRead(sens_b);
+  // MOVER DE ACUERDO A UN POTENCIOMETRO
+  mover_y_controlar_potenciometro_LC(err_a, vars_control_a, ma);
+  mover_y_controlar_potenciometro_LC(err_b, vars_control_b, mb);
+  mover_y_controlar_potenciometro_LC(err_c, vars_control_c, mc);
+  mover_y_controlar_potenciometro_LC(err_d, vars_control_d, md);
+  
 
-  // Leer y Filtrar señal
-  tmpPos_a = filtro_promedios(1, pot_a);
-  tmpPos_b = filtro_promedios(1, pot_b);
-
-  // Calcular el error
-  err_a = desPos_a - tmpPos_a;
-  err_b = desPos_b - tmpPos_b;
-
-  // Integral del error
-
-  intErr_a = int_error(intErr_a, err_a, 50);
-  intErr_b = int_error(intErr_b, err_b, 50);
-
-  // Derivada del error
-  derErr_a = err_a - prevErr_a;
-  derErr_b = err_b - prevErr_b;
-
-  prevErr_a = err_a;
-  prevErr_b = err_b;
-
-  tmpVel_a = control_PI(err_a, intErr_a, 0.001);
-  tmpVel_b = control_PI(err_b, intErr_b, 0.001);
-
-  // Mover motor
-  mover(ma1, ma2, va, tmpVel_a);
-  mover(mb1, mb2, vb, tmpVel_b);
+  /*
+  vars_control_a[1] = 750;
+  vars_control_b[1] = 750;
+  vars_control_c[1] = 750;
+  vars_control_d[1] = 750;
+  
+  mover_y_controlar_posicion_LC(err_a, vars_control_a, ma);
+  mover_y_controlar_posicion_LC(err_b, vars_control_b, mb);
+  mover_y_controlar_posicion_LC(err_c, vars_control_c, mc);
+  mover_y_controlar_posicion_LC(err_d, vars_control_d, md);
+  */
 }
