@@ -77,11 +77,11 @@ int sgn(int x) {
 // -------------------------------------------------------------------------------------------------
 // Control tipo P
 
-int control_p(int error) {
-  if (abs(error) < 15) {
+int control_p(int error, int margen, int P) {
+  if (abs(error) < margen) {
     return 0;
   } else {
-    return 250 * sgn(error);
+    return P * error;
   }
 }
 
@@ -191,7 +191,7 @@ void mover_y_controlar_posicion_LC(int error, int * vars_control, int * motor) {
 void mover_y_controlar_potenciometro_LC(int error, int * vars_control, int * motor) {
   // Extraer variables
 
-  // Des pos
+  // Posicion deseada
   vars_control[1] = analogRead(vars_control[12]);
 
   // Leer y Filtrar señal - Temp pos
@@ -210,7 +210,7 @@ void mover_y_controlar_potenciometro_LC(int error, int * vars_control, int * mot
   vars_control[4] = error;
 
   // Control PID para devolver velocidad del motor
-  vars_control[2] = control_PID(error, vars_control[5] , vars_control[3], 150, 0.000001, 0.00001, 20);
+  vars_control[2] = control_PID(error, vars_control[5] , vars_control[3], 250 , 0.000001, 0.00001, 20);
 
   // Mover motor
   mover(motor[0], motor[1], motor[2], vars_control[2]);
@@ -218,16 +218,30 @@ void mover_y_controlar_potenciometro_LC(int error, int * vars_control, int * mot
 }
 
 // -------------------------------------------------------------------------------------------------
-// Inicializar motor
+// Inicializar motor con y sin potenciometro (El potenciometro marca la posición deseada)
 
-void inicializar_motor(int motor, int sensor, int potenciometro) {
+void inicializar_motor_pot(int * motor, int sensor, int potenciometro) {
 
   // Definir pins de salida
-  pinMode(motor, OUTPUT);
+  pinMode(motor[0], OUTPUT);
+  pinMode(motor[1], OUTPUT);
+  pinMode(motor[2], OUTPUT);
 
   // Definir pines de entrada
   pinMode(potenciometro, INPUT);
   pinMode(sensor, INPUT);
 
+}
+
+void inicializar_motor(int * motor, int sensor) {
+
+  // Definir pins de salida
+  pinMode(motor[0], OUTPUT);
+  pinMode(motor[1], OUTPUT);
+  pinMode(motor[2], OUTPUT);
+
+
+  // Definir pines de entrada
+  pinMode(sensor, INPUT);
 
 }

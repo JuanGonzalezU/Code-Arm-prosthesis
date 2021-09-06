@@ -36,7 +36,7 @@ int sgn(int x);
 // -------------------------------------------------------------------------------------------------
 // Control tipo P
 
-int control_p(int error);
+int control_p(int error, int margen, int P);
 
 // -------------------------------------------------------------------------------------------------
 // Integral del error
@@ -57,6 +57,8 @@ void mover_y_controlar_posicion_LC(int error, int * vars_control, int * motor);
 
 void mover_y_controlar_potenciometro_LC(int error, int * vars_control, int * motor);
 
-void inicializar_motor(int motor, int sensor, int potenciometro) ;
+void inicializar_motor_pot(int * motor, int sensor, int potenciometro) ;
+
+void inicializar_motor(int * motor, int sensor);
 
 #endif
