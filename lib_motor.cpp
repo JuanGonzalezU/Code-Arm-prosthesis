@@ -1,6 +1,7 @@
 #include "lib_motor.h"
 
-
+#include <Arduino.h>
+#include <analogWrite.h>
 // -------------------------------------------------------------------------------------------------
 // Esta funcion es para manejar el motor, las entradas son:
 

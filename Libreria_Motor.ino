@@ -1,15 +1,16 @@
 //Codigo para controlar motores teniendo en cuenta la libreria creada
 
 #include "lib_motor.h"
-
+#include <Arduino.h>
+#include <analogWrite.h> 
 
 // Definir variables --------------------------------------------
 
 //Salida al motor
-const int ma[] = {2, 3, 4};
+int ma[] = {25, 33, 32};
 
 // Entradas
-const int  sens_a = A0, pot_a = A1;
+int  sens_a = 27, pot_a = 26;
 
 // Inicalización ------------------------------------------------
 
@@ -35,7 +36,7 @@ float err_a;
 void loop() {
 
   // mover_y_controlar_potenciometro_LC(err_a, vars_control_a, ma);
-  mover(ma[0],ma[1],ma[2],-200);
+  mover(ma[0],ma[1],ma[2],255);
   
   Serial.print(analogRead(sens_a));
   Serial.print(" ");
