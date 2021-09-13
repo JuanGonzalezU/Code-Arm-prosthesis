@@ -61,4 +61,6 @@ void inicializar_motor_pot(int * motor, int sensor, int potenciometro) ;
 
 void inicializar_motor(int * motor, int sensor);
 
+bool limites(int des_pos, int max_pos, int min_pos);
+
 #endif

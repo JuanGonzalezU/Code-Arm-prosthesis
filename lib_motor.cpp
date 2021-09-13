@@ -146,6 +146,12 @@ void mover_y_controlar_posicion_LC(int error, int * vars_control, int * motor) {
 
   // Extraer variables
 
+  // Verificar limites de posicion
+  if (limites(vars_control[1], vars_control[13], vars_control[14]) == true) {
+    mover(motor[0], motor[1], motor[2], 0);
+    return;
+  }
+
   // Leer y Filtrar señal - Temp pos
   vars_control[0] = filtro_promedios(vars_control[10], vars_control[11]);
 
@@ -193,6 +199,18 @@ void mover_y_controlar_potenciometro_LC(int error, int * vars_control, int * mot
 
   // Posicion deseada
   vars_control[1] = analogRead(vars_control[12]);
+
+  // Verificar limites de posicion
+  if (limites(vars_control[1], vars_control[13], vars_control[14]) == true) {
+    mover(motor[0], motor[1], motor[2], 0);
+    return;
+  }
+
+  // Verificar limites de posicion
+  if (limites(vars_control[1], vars_control[13], vars_control[14]) == true) {
+    mover(motor[0], motor[1], motor[2], 0);
+    return;
+  }
 
   // Leer y Filtrar señal - Temp pos
   vars_control[0] = filtro_promedios(vars_control[10], vars_control[11]);
@@ -243,5 +261,19 @@ void inicializar_motor(int * motor, int sensor) {
 
   // Definir pines de entrada
   pinMode(sensor, INPUT);
+
+}
+
+
+// -------------------------------------------------------------------------------------------------
+// Definir limites de poscion
+
+bool limites(int des_pos, int max_pos, int min_pos) {
+
+  if (des_pos > max_pos or des_pos < min_pos) {
+    return true;
+  } else {
+    return false;
+  }
 
 }
